@@ -66,6 +66,7 @@ def print_report():
             flagged.append((d["hostname"], reasons))
             print(f"  >>> FLAGGED: {', '.join(reasons)}")
 
+    # Final Print
     print("\n" + "-" * 60)
     print("TOTALS BY DEVICE TYPE")
     for t, count in type_totals.items():
