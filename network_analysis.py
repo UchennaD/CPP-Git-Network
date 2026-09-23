@@ -1,6 +1,4 @@
-"""
-Network Analysis Scripts for analyzing network data and generating insights.
-"""
+# Network Analysis Scripts for analyzing network data and generating insights.
 
 from config_local import MGMT_USERNAME, MGMT_SERVER
 
@@ -32,9 +30,8 @@ devices = [
 ]
 
 def needs_attention(device):
-    """
-    Determines if a device needs attention based on its status, CPU, memory, and backup status.
-    """
+    # Determines if a device needs attention based on its status, CPU, memory, and backup status.
+   
     if device["status"] != "up":
         return True
     if device["cpu"] > 85 or device["mem"] > 90:
