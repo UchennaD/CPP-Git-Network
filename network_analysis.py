@@ -31,13 +31,58 @@ devices = [
 
 def needs_attention(device):
     # Determines if a device needs attention based on its status, CPU, memory, and backup status.
-   
+    reasons = []
     if device["status"] != "up":
-        return True
-    if device["cpu"] > 85 or device["mem"] > 90:
-        return True
+        reasons.append(f"status is '{device['status']}'")
+    if device["cpu"] > 85:
+        reasons.append("high CPU")
+    if device["mem"] > 90:
+        reasons.append("high memory")
     if not device["backup_ok"]:
-        return True
+        reasons.append("backup failed")
     if device["uptime_days"] < 3:
-        return True
-    return False
+        reasons.append("low uptime")
+    return reasons
+
+def print_report():
+    print("=" * 60)
+    print("NETWORK DEVICE HEALTH REPORT")
+    print(f"Management server: {MGMT_SERVER}  (checked in as {MGMT_USERNAME})")
+    print("=" * 60)
+
+    type_totals = {}
+    location_totals = {}
+    flagged = []
+
+    for d in devices:
+        type_totals[d["type"]] = type_totals.get(d["type"], 0) + 1
+        location_totals[d["location"]] = location_totals.get(d["location"], 0) + 1
+
+        print(f"\nHost: {d['hostname']} ({d['type']})")
+        print(f"  IP: {d['ip']} | Location: {d['location']} | Status: {d['status']}")
+        print(f"  CPU: {d['cpu']}% | Memory: {d['mem']}% | Uptime: {d['uptime_days']}d")
+        print(f"  Backup OK: {d['backup_ok']}")
+
+        reasons = needs_attention(d)
+        if reasons:
+            flagged.append((d["hostname"], reasons))
+            print(f"  >>> FLAGGED: {', '.join(reasons)}")
+
+    print("\n" + "-" * 60)
+    print("TOTALS BY DEVICE TYPE")
+    for t, count in type_totals.items():
+        print(f"  {t}: {count}")
+
+    print("\nTOTALS BY LOCATION")
+    for loc, count in location_totals.items():
+        print(f"  {loc}: {count}")
+
+    print("\n" + "-" * 60)
+    print(f"DEVICES NEEDING ATTENTION: {len(flagged)} of {len(devices)}")
+    for hostname, reasons in flagged:
+        print(f"  - {hostname}: {', '.join(reasons)}")
+    print("=" * 60)
+
+
+if __name__ == "__main__":
+    print_report()
