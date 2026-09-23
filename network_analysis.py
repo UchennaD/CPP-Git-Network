@@ -45,10 +45,8 @@ def needs_attention(device):
     return reasons
 
 def print_report():
-    print("=" * 60)
     print("NETWORK DEVICE HEALTH REPORT")
     print(f"Management server: {MGMT_SERVER}  (checked in as {MGMT_USERNAME})")
-    print("=" * 60)
 
     type_totals = {}
     location_totals = {}
