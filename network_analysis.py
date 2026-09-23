@@ -30,3 +30,17 @@ devices = [
      "location": "Branch-East", "status": "degraded", "cpu": 91, "mem": 95,
      "uptime_days": 2, "backup_ok": False},
 ]
+
+def needs_attention(device):
+    """
+    Determines if a device needs attention based on its status, CPU, memory, and backup status.
+    """
+    if device["status"] != "up":
+        return True
+    if device["cpu"] > 85 or device["mem"] > 90:
+        return True
+    if not device["backup_ok"]:
+        return True
+    if device["uptime_days"] < 3:
+        return True
+    return False
